@@ -31,11 +31,11 @@ float heading, roll, pitch;
 float rollOffset = 0, pitchOffset = 0, headingOffset = 0;
 
 uint8_t status;
-
+float speed = 0.0;
 Commander command = Commander(Serial);
 void doMotor(char* cmd) { command.scalar(&motor0.target, cmd); }
 void onMotor(char* cmd) { command.scalar(&motor1.target, cmd); }
-
+void setSpeed(char* cmd){ command.scalar(&speed, cmd);}
 
 void bhyInterruptHandler(void)
 {
@@ -68,6 +68,10 @@ void orientationHandler(bhyVector data, bhyVirtualSensor type)
     status = data.status;
     newOrientationData = true;
 }
+
+
+const float maxPitch = 10.0; 
+const float maxSpeed = 8;
 
 void setup() {
     // Initialize Serial
@@ -110,7 +114,7 @@ void setup() {
     motor1.target = 0;
 
     command.add('A', onMotor, "motor");
-
+    command.add('S', setSpeed, "Speed");
 
     Serial.println(F("Motor commands sketch | Initial motion control > torque/voltage : target 2V."));
 
@@ -182,35 +186,35 @@ void setup() {
 }
 
 float x = 0;
-
 void loop() {
-    // Iterative setting of FOC phase voltage
-    motor1.loopFOC();
-    //motor1.loopFOC();
-
-    // Update motor targets
-    
-   // motor1.target = 3 * sin(x);
-
-    // Move motors
-    motor1.move();
-   // motor1.move();
-
-    // Motor monitoring
-   //  motor1.monitor();
-   //  motor1.monitor();
-    
+    // Update IMU data
     bhi160.run();
-   
-     if (newOrientationData) {
-        Serial.println("IMU Data: Heading=" + String(heading) + ", Pitch=" + String(pitch) + ", Roll=" + String(roll) + ", Status=" + String(status));
-        newOrientationData = false; // Reset after reading data
-        motor1.target = -pitch;
-    }
-    // User communication
-   // motor1.target = 2;
-    command.run();
 
-    // Update x for next loop
+    if (newOrientationData) {
+        Serial.println("IMU Data: Heading=" + String(heading) + ", Pitch=" + String(pitch) + ", Roll=" + String(roll) + ", Status=" + String(status));
+        newOrientationData = false;
+
+        float pitchError = pitch; 
+        if (abs(pitchError) > maxPitch) {
+            pitchError = (pitchError > 0) ? maxPitch : -maxPitch;
+        }
+
+        float pitchGain = 0.5; 
+        float pitchCorrection = pitchError * pitchGain;
+        float target = speed - pitchCorrection;
+        motor1.target = target;
+
+        if (motor1.target > maxSpeed) { 
+            motor1.target = maxSpeed;
+        }
+        if (motor1.target < -maxSpeed) { 
+            motor1.target = -maxSpeed;
+        }
+
+        motor1.loopFOC();
+        motor1.move();
+    }
+
+    command.run();
     x += 0.001;
 }
