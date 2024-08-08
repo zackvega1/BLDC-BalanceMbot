@@ -25,11 +25,12 @@
  *  Motiron control type
  */
 enum MotionControlType : uint8_t {
-  torque            = 0x00,     //!< Torque control
+  Stability         = 0x00,     //!< Torque control
   velocity          = 0x01,     //!< Velocity motion control
   angle             = 0x02,     //!< Position/angle motion control
   velocity_openloop = 0x03,
-  angle_openloop    = 0x04
+  angle_openloop    = 0x04,
+  
 };
 
 /**
@@ -121,7 +122,7 @@ class FOCMotor
      * 
      * This function doesn't need to be run upon each loop execution - depends of the use case
      */
-    virtual void move(float target = NOT_SET)=0;
+    virtual void move(float target = NOT_SET, float pitch = NOT_SET)=0;
 
     /**
     * Method using FOC to set Uq to the motor at the optimal angle
@@ -151,6 +152,7 @@ class FOCMotor
 
     // state variables
     float target; //!< current target value - depends of the controller
+    float pitch;
     float feed_forward_velocity = 0.0f; //!< current feed forward velocity
   	float shaft_angle;//!< current motor angle
   	float electrical_angle;//!< current electrical angle

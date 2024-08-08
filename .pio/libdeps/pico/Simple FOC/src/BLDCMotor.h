@@ -66,7 +66,7 @@ class BLDCMotor: public FOCMotor
      * 
      * This function doesn't need to be run upon each loop execution - depends of the use case
      */
-    void move(float target = NOT_SET) override;
+    void move(float target = NOT_SET, float new_pitch = NOT_SET) override;
     
     float Ua, Ub, Uc;//!< Current phase voltages Ua,Ub and Uc set to motor
     float	Ualpha, Ubeta; //!< Phase voltages U alpha and U beta used for inverse Park and Clarke transform

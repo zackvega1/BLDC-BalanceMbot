@@ -380,8 +380,8 @@ void Commander::motion(FOCMotor* motor, char* user_cmd, char* separator){
           if(!GET && value >= 0 && (int)value < 5) // if set command
             motor->controller = (MotionControlType)value;
           switch(motor->controller){
-            case MotionControlType::torque:
-              println(F("torque"));
+            case MotionControlType::Stability:
+              println(F("Stable"));
               break;
             case MotionControlType::velocity:
               println(F("vel"));
@@ -505,7 +505,7 @@ void Commander::target(FOCMotor* motor,  char* user_cmd, char* separator){
   float pos, vel, torque;
   char* next_value;
   switch(motor->controller){
-    case MotionControlType::torque: // setting torque target
+    case MotionControlType::Stability: // setting torque target
       torque = atof(strtok (user_cmd, separator));
       motor->target = torque;
       break;

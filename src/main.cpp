@@ -91,7 +91,7 @@ void setup() {
     driver1.init();
     motor1.linkDriver(&driver1);
 
-    motor1.controller = MotionControlType::torque;
+    motor1.controller = MotionControlType::Stability;
 
 
 
@@ -191,25 +191,28 @@ void loop() {
     bhi160.run();
 
     if (newOrientationData) {
-        Serial.println("IMU Data: Heading=" + String(heading) + ", Pitch=" + String(pitch) + ", Roll=" + String(roll) + ", Status=" + String(status));
+       // Serial.println("IMU Data: Heading=" + String(heading) + ", Pitch=" + String(pitch) + ", Roll=" + String(roll) + ", Status=" + String(status));
+       
         newOrientationData = false;
+        motor1.target = 3.0;
+        motor1.pitch = pitch;
+       // Serial.println(motor1.pitch);
+        // float pitchError = pitch; 
+        // if (abs(pitchError) > maxPitch) {
+        //     pitchError = (pitchError > 0) ? maxPitch : -maxPitch;
+        // }
 
-        float pitchError = pitch; 
-        if (abs(pitchError) > maxPitch) {
-            pitchError = (pitchError > 0) ? maxPitch : -maxPitch;
-        }
+        // float pitchGain = 0.5; 
+        // float pitchCorrection = pitchError * pitchGain;
+        // float target = speed - pitchCorrection;
+        // motor1.target = target;
 
-        float pitchGain = 0.5; 
-        float pitchCorrection = pitchError * pitchGain;
-        float target = speed - pitchCorrection;
-        motor1.target = target;
-
-        if (motor1.target > maxSpeed) { 
-            motor1.target = maxSpeed;
-        }
-        if (motor1.target < -maxSpeed) { 
-            motor1.target = -maxSpeed;
-        }
+        // if (motor1.target > maxSpeed) { 
+        //     motor1.target = maxSpeed;
+        // }
+        // if (motor1.target < -maxSpeed) { 
+        //     motor1.target = -maxSpeed;
+        // }
 
         motor1.loopFOC();
         motor1.move();

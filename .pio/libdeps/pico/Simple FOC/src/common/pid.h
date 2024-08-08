@@ -22,7 +22,7 @@ public:
     PIDController(float P, float I, float D, float ramp, float limit);
     ~PIDController() = default;
 
-    float operator() (float error);
+    float operator() (float error, float serror);
     void reset();
 
     float P; //!< Proportional gain 
@@ -31,11 +31,14 @@ public:
     float output_ramp; //!< Maximum speed of change of the output value
     float limit; //!< Maximum output value
 
+
 protected:
     float error_prev; //!< last tracking error value
     float output_prev;  //!< last pid output value
     float integral_prev; //!< last integral component value
     unsigned long timestamp_prev; //!< Last execution timestamp
+    float serror_prev;
+    float sintegral_prev;
 };
 
 #endif // PID_H
