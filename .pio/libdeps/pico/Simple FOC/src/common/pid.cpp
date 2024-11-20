@@ -27,13 +27,13 @@ float PIDController::operator() (float error, float serror = 0){
     // Discrete implementations
     // proportional part
     // u_p  = P *e(k)
-    float sP = 4.0;
-    float sI = 0.0;
+    float sP = 1.5;
+    float sI = 0.1;
     float sD = 0.0;
 
     float proportional = P * error;
     float sproportional = sP * serror;
-    Serial.println(serror);
+    //Serial.println(serror);
     // Tustin transform of the integral part
     // u_ik = u_ik_1  + I*Ts/2*(ek + ek_1)
     float integral = integral_prev + I*Ts*0.5f*(error + error_prev);
