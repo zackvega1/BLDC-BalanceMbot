@@ -4,7 +4,7 @@
 
 **BLDC-BalanceBot** is a project for a two-wheeled self-balancing robot powered by brushless DC (BLDC) motors. This repository is built as an abstraction and modification of the BLDC motor drivers originally developed in [BLDCMotorDriver](https://github.com/zackvega1/BLDCMotorDriver) by Zack Vega, Clayton Elwell, and Ted Ivanac.
 
-The project leverages a custom-designed MBOT, created and fabricated by Zack Vega and Andrew Rodriguez. By modifying the default SimpleFOC motor drivers, this system integrates an IMU (Inertial Measurement Unit) with a Raspberry Pi Pico to maintain balance and control velocity through a double-nested PID control loop.
+The project leverages a custom-designed MBOT, created and fabricated by Zack Vega and Andrew Rodriguez. By modifying the default SimpleFOC motor drivers, an integrated IMU, and two BLDC motors, this system effectively maintains balance and control velocity through a double-nested PID control loop.
 
 ## Features
 
